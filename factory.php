@@ -20,3 +20,5 @@ class factory{
         return self::$instance[$className];
     }
 }
+
+// من تغییر یافتم
