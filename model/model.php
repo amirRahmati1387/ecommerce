@@ -136,7 +136,7 @@ class model extends mainDB{
     public function countQuery(array $datas , $x = null){
         $className = static :: class;
         $obj = factory :: factory($className);
-        if($x){
+        if($x != null){
             $obj -> x = $x;
         }
         foreach($datas as $alias => $tableName){
@@ -198,11 +198,20 @@ class model extends mainDB{
             }
             $obj_category -> base .= $obj_category -> join($join , $datas) -> where($key.'.'.$value[1] , $value[1].'.'.$value[0]) -> getSql();
             if($join == "LEFT"){
-                $obj_category -> base = $obj_category -> countQuery([' ' => ['product' , 'id'] , "left"]) -> where($obj_category -> countQuery , 0) -> getSql();
+                $obj_category -> base = $obj_category -> countQuery([' ' => ['product' , 'id']]) -> where($obj_category -> countQuery , 0) -> getSql();
             }
         }
         $obj_category -> type = "whidQuery";
         return $obj_category;
+    }
+
+    public function case($alias){
+        $className = static :: class;
+        $obj = factory :: factory($className);
+        $obj -> type = "case";
+        $obj -> base .= ',CASE product.point WHEN 1 THEN "بد" WHEN 2 THEN "خوب" WHEN 3 THEN "عالی" WHEN 4 THEN "لجند" ELSE "هیچی نیست" END '. $alias;
+        $obj -> from();
+        return $obj;
     }
 
     public function sort($type , $value){
@@ -258,24 +267,17 @@ class model extends mainDB{
             $crud .= $obj -> groupBy;
             $obj -> groupBy = '';
         }
+        if(!empty($obj -> where)){
+            $crud .= " WHERE " . implode('AND', $this -> where);
+        }
+        $this -> where = [];
 
         if($obj -> countQuery && $obj -> x){
-            // $obj -> base .= ','.$obj -> countQuery;
-            var_dump($obj -> base);
-            die();
-        }
-
-        if($obj -> countQuery){
             $obj -> base .= ','.$obj -> countQuery;
             $obj -> from();
             $crud = $obj -> base;
             $obj -> countQuery = '';
         }
-
-        if(!empty($obj -> where)){
-            $crud .= " WHERE " . implode('AND', $this -> where);
-        }
-        $this -> where = [];
         if(isset($this -> limit)){
             $crud .= $this -> limit;
         }
@@ -297,7 +299,7 @@ class model extends mainDB{
             $base = $obj -> getSql();
             return $obj :: $connection -> query($base);
         }
-        if(in_array($obj -> type , ['select' , 'find' , 'limit'])){
+        if(in_array($obj -> type , ['select' , 'find' , 'limit' , "case"])){
             $obj -> from();
             $base = $obj -> getSql();
             return $className :: $connection -> query($base);

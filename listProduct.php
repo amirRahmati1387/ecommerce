@@ -1,11 +1,3 @@
-<?php
-
-    
-
-
-
-die();
-?>
 <form action = "http://localhost/ecommerce/getLimitProduct/page/1" method = "POST">
     <input type = "int" name = "start" placeholder = "start">
     <input type = "int" name = "end" placeholder = "end">
@@ -58,8 +50,9 @@ if(count($GLOBALS["roterKey"]) > 5){
     // $table = Product :: select() -> where(" price " , 100 , " > " ) -> sort($price , $sort);
     // $join = Product :: select() -> join("Category") -> sort($price , $sort);
     // $test = Product :: category('category' , ['id' ,  'name' ,'price', 'category' , 'description']) -> sort($price , $sort);
-    $test = Product :: category('category' , ['*']) -> sort($price , $sort);
-    // var_dump($test);
+    // $test = Product :: category('category' , ['*']) -> sort($price , $sort);
+    $test = Product :: select(["product.id" , "product.name" , "product.price" , "product.category" , "product.description"]) -> case("pro_POINT") -> sort($price , $sort);
+
     $count = count($test);
     $page = 5;
     $key = $GLOBALS["roterKey"][4];
@@ -76,6 +69,7 @@ if(count($GLOBALS["roterKey"]) > 5){
             <div><?= $test[$i]['price'];?></div>
             <div><?= $test[$i]['category'];?></div>
             <div><?= $test[$i]['description'];?></div>
+            <div><?= $test[$i]['pro_POINT'];?></div>
         </div>
         <a href = "http://localhost/ecommerce/deleteProduct/<?=$test[$i]["id"];?>">Delete</a>
         <a href = "http://localhost/ecommerce/editProduct/<?=$test[$i]["id"];?>">Update</a>

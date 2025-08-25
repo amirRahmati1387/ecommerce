@@ -35,7 +35,7 @@ echo"______________________________________________";
 echo"</br>";
 echo"</br>";
 
-$table = Category :: select() -> countQuery(['product_count'=>['product']]) -> get();
+$table = Category :: select() -> countQuery(['product_count'=>['product']] , 'LIst') -> get();
 
 while($result = $table -> fetch_assoc()){?>
     <div>

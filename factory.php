@@ -20,4 +20,3 @@ class factory{
         return self::$instance[$className];
     }
 }
-

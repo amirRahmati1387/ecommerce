@@ -3,7 +3,7 @@
 class Product extends model{
     public static $tableName = "product";
     public static $relatedTo = ["product" => ["category" , "id"]];
-    public $case = [
+    public static $case = [
         "WHEN 1 " => ["THEN بد"],
         "WHEN 2 " => ["THEN خوب"],
         "WHEN 3 " => ["THEN عالی"],
