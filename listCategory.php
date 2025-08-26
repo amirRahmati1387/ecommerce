@@ -34,8 +34,24 @@ echo"</br>";
 echo"______________________________________________";
 echo"</br>";
 echo"</br>";
+?>
 
-$table = Category :: select() -> countQuery(['product_count'=>['product']] , 'LIst') -> get();
+<form action = "http://localhost/ecommerce/listCategoryOrderBy/page/1" method = "POST">
+    <select name = "sort">
+        <option value = "ASC">asc</option>
+        <option value = "DESC">desc</option>
+    </select>
+    <button>send</button>
+</form>
+
+<?php
+echo"______________________________________________";
+echo"</br>";
+echo"</br>";
+
+// $table = Category :: select() -> countQuery(['product_count'=>['product']] , 'LIst') -> get();
+
+$table = Category :: select(["Category.id" , "Category.title" , "Category.description"]) -> if("LEFT" , "Product" , "name" , "'بدون محصول'" , " product_count") -> get();
 
 while($result = $table -> fetch_assoc()){?>
     <div>

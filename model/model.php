@@ -8,6 +8,8 @@ class model extends mainDB{
     protected $join;
     protected $countQuery;
     protected $groupBy;
+    protected $ifnull;
+    protected $orderBy;
     protected $x = '';
 
     public static function select(array $fields = ["*"]){  
@@ -205,12 +207,38 @@ class model extends mainDB{
         return $obj_category;
     }
 
+    public function if($join , $datas , $filds , $description , $alias){
+        $className = static :: class;
+        $obj = factory :: factory($className);
+        $obj -> base .= $obj -> ifNULL($datas , $filds , $description , $alias) -> ifnull;
+        foreach($obj :: $relatedTo as $key => $value){
+            $obj -> base .= $obj -> join($join , $datas) -> where($key .'.'. $value[1] , $value[1] .'.'. $value[0]) ->  getSql();
+        }
+        $obj -> type = "if";
+        return $obj;
+    }
+
     public function case($alias){
         $className = static :: class;
         $obj = factory :: factory($className);
         $obj -> type = "case";
         $obj -> base .= ',CASE product.point WHEN 1 THEN "بد" WHEN 2 THEN "خوب" WHEN 3 THEN "عالی" WHEN 4 THEN "لجند" ELSE "هیچی نیست" END '. $alias;
         $obj -> from();
+        return $obj;
+    }
+
+    public function ifNULL($dates , $fild , $description , $alias){
+        $className = static :: class;
+        $obj = factory :: factory($className);
+        $obj -> base .= " ,IFNULL". "( " . $dates .'.'. $fild .' , '. $description ." )" . $alias;
+        return $obj;
+    }
+
+    public function orderBy($alias , $sort){
+        $className = static :: class;
+        $obj = factory :: factory($className);
+        $obj -> type = "orderBy";
+        $obj -> orderBy = " ORDER BY " . $alias . $sort;
         return $obj;
     }
 
@@ -263,6 +291,12 @@ class model extends mainDB{
             $this -> where = [];
             $this -> join = '';
         }
+        if($obj -> type == "orderBy"){
+            $obj -> base .= ' ,'. $obj -> countQuery;
+            $obj -> from();
+            $obj -> base .= $obj -> orderBy;
+            $crud = $obj -> base;
+        }
         if(isset($obj -> groupBy)){
             $crud .= $obj -> groupBy;
             $obj -> groupBy = '';
@@ -295,7 +329,7 @@ class model extends mainDB{
             $obj -> from();
             return $className :: $connection -> query($obj -> base);
         }
-        if(in_array($obj -> type , ['pagenate' , 'join' , 'sort' , 'belongsTo' , 'whidQuery' , 'countQuery'])){
+        if(in_array($obj -> type , ['pagenate' , 'join' , 'sort' , 'belongsTo' , 'whidQuery' , 'countQuery' , "if" , "orderBy"])){
             $base = $obj -> getSql();
             return $obj :: $connection -> query($base);
         }
