@@ -7,10 +7,7 @@ if(empty($_POST)){
     $start = $_POST["start"];
     $end = $_POST["end"];
 }
-$table = Product :: limit($start , $end) -> get();
-while($row = $table -> fetch_assoc()){
-    $array []= $row;
-}
+$array = Product :: limit($start , $end);
 
 for($i = 0 ; $i < count($array) ; $i++){
     for($j = $i ; $j < count($array) ; $j++){
@@ -30,12 +27,13 @@ $limit = $offset + $page;
 for($i = $offset ; $i < $limit; $i++){
     if($coant > $i){
     $id = $array[$i]['category'];
-    $key = Category :: find() -> where("id",$id) -> get() -> fetch_assoc();?>
+    $key = Category :: find($id);?>
     <div>
         <div><?= $array[$i]['name'];?></div>
         <div><?= $array[$i]['price'];?></div>
-        <div><?= $key['title'];?></div>
+        <div><?= $key[0]['title'];?></div>
         <div><?= $array[$i]['description'];?></div>
+        <div><?= $array[$i]['point'];?></div>
     </div>
     <a href = "http://localhost/ecommerce/deleteProduct/<?=$array[$i]["id"];?>">Delete</a>
     <a href = "http://localhost/ecommerce/editProduct/<?=$array[$i]["id"];?>">Update</a>

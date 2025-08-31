@@ -20,14 +20,7 @@ echo"</br>";
 echo"</br>";
 
 $table = User :: pagenate();
-$count = $table -> num_rows / 5;
-for($i = 1 ; $i -1 < $count; $i++){?>
-    <a href = "http://localhost/ecommerce/listUser/page/<?php echo $i?>"><?php echo $i?></a>
-<?php
-}
-echo"</br>";
-echo"______________________________________________";
-echo"</br>";
+
 echo"______________________________________________";
 echo"</br>";
 echo"</br>";
@@ -41,5 +34,16 @@ while($result = $table -> fetch_assoc()){?>
     <a href = "http://localhost/ecommerce/deleteUser/<?=$result['id'];?>">Delete</a>
     <a href = "http://localhost/ecommerce/editeUser/<?=$result['id'];?>">Update</a>
     <a href = "http://localhost/ecommerce/singleUser/<?=$result['id'];?>">Single</a>
+<?php
+}
+
+echo"</br>";
+echo"______________________________________________";
+echo"</br>";
+echo"</br>";
+
+$count = ceil($table -> num_rows / 5);
+for($i = 1 ; $i <= $count; $i++){?>
+    <a href = "http://localhost/ecommerce/listUser/page/<?php echo $i?>"><?php echo $i?></a>
 <?php
 }

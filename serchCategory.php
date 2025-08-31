@@ -1,12 +1,12 @@
 <?php
 
-$table = Category :: select() -> get();
+$table = Category :: all();
 
-while($row = $table -> fetch_assoc()){
-    if($row[$_POST['serch']] == $_POST['name']){?>
+for($i = 0 ; $i < count($table) ; $i++){
+    if($table[$i][$_POST['serch']] == $_POST['name']){?>
         <div>
-            <div><?= $row['title'];?></div>
-            <div><?= $row['description'];?></div>
+            <div><?= $table[$i]['title'];?></div>
+            <div><?= $table[$i]['description'];?></div>
         </div>
     <?php    
     }

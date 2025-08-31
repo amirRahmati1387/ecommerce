@@ -51,7 +51,7 @@ if(count($GLOBALS["roterKey"]) > 5){
     // $join = Product :: select() -> join("Category") -> sort($price , $sort);
     // $test = Product :: category('category' , ['id' ,  'name' ,'price', 'category' , 'description']) -> sort($price , $sort);
     // $test = Product :: category('category' , ['*']) -> sort($price , $sort);
-    $test = Product :: select(["product.id" , "product.name" , "product.price" , "product.category" , "product.description"]) -> case("pro_POINT") -> sort($price , $sort);
+    $test = Product :: select("product.id" , "product.name" , "product.price" , "product.category" , "product.description") -> case("pro_POINT") -> sort($price , $sort);
 
     $count = count($test);
     $page = 5;

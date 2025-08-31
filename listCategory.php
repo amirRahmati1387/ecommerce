@@ -51,6 +51,7 @@ echo"</br>";
 
 // $table = Category :: select() -> countQuery(['product_count'=>['product']] , 'LIst') -> get();
 
+die();
 $table = Category :: select(["Category.id" , "Category.title" , "Category.description"]) -> if("LEFT" , "Product" , "name" , "'بدون محصول'" , " product_count") -> get();
 
 while($result = $table -> fetch_assoc()){?>

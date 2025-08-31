@@ -1,3 +1,3 @@
 <?php
 
-Product :: create($_POST) -> get();
+Product :: create($_POST);

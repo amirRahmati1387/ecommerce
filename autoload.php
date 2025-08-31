@@ -3,7 +3,7 @@
 class autoload{
     public function autoload($className){
         $addres = "model/".$className . ".php";
-        if($className == "loadFile" || $className == "factory"){
+        if($className == "loadFile" || $className == "factory" || $className == "facade"){
             $addres = $className .".php";
         }
         include($addres);

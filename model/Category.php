@@ -1,6 +1,6 @@
 <?php
 
-class Category extends model{
-    public static $tableName = "category";
-    public static $relatedTo = ['product'=>['id', 'category']];
+class Category extends facade{
+    public $tableName = "category";
+    public $relatedTo = ['product'=>['id', 'category']];
 }

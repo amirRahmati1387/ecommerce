@@ -1,19 +1,20 @@
 <?php
 
-$result = Product :: find() -> where("id", $GLOBALS["roterKey"][3]) -> get() -> fetch_assoc();
-$table = Category :: select() -> get();?>
+$result = Product :: find($GLOBALS["roterKey"][3]);
+$key = Category :: all();?>
 <form action = "http://localhost/ecommerce/getediteProduct" method = "POST">
-    <input name = "id" type = "hidden" value = "<?=$result['id'];?>">
-    <input name = "name" type = "text" placeholder = "name" value = "<?=$result['name'];?>">
-    <input name = "price" type = "text" placeholder = "price" value = "<?=$result['price'];?>">
+    <input name = "id" type = "hidden" value = "<?=$result[0]['id'];?>">
+    <input name = "name" type = "text" placeholder = "name" value = "<?=$result[0]['name'];?>">
+    <input name = "price" type = "text" placeholder = "price" value = "<?=$result[0]['price'];?>">
     <select name = "category">
         <?php
-            while($resulte = $table -> fetch_assoc()){?>
-                <option value = "<?=$resulte['id'];?>"><?=$resulte['title'];?></option>
+            for($i = 0 ; $i < count($key) ; $i++){?>
+                <option value = "<?=$key[$i]['id'];?>"><?=$key[$i]['title'];?></option>
             <?php
             }
             ?>
     </select> 
-    <input name = "description" type = "text" placeholder = "description" value = "<?=$result['description'];?>">
+    <input name = "description" type = "text" placeholder = "description" value = "<?=$result[0]['description'];?>">
+    <input name = "point" type = "text" placeholder = "point" value = "<?=$result[0]['point'];?>">
     <button>Update</button>
 </form>
