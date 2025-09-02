@@ -1,8 +1,12 @@
 <?php
 
-$result = Footer :: find() -> where("id", $GLOBALS["roterKey"][3]) -> get() -> fetch_assoc();?>
-<div>
-    <div><?=$result['nameDesigner']?></div>
-    <div><?=$result['description']?></div>
-    <div><?=$result['phonNumber']?></div>
-</div>
+$result = Footer :: find($GLOBALS["roterKey"][3]);
+for($i = 0 ; $i < count($result) ; $i++){
+?>
+    <div>
+        <div><?=$result[$i]['nameDesigner']?></div>
+        <div><?=$result[$i]['description']?></div>
+        <div><?=$result[$i]['phonNumber']?></div>
+    </div>
+<?php
+}

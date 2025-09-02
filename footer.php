@@ -1,7 +1,8 @@
 <?php
 
-$table = Footer :: select() -> get();
-$rows = $table -> fetch_assoc();
+$rows = Footer :: all();
+
+
 echo"</br>";
 echo"____________________________________________";
 echo"</br>";
@@ -9,12 +10,13 @@ echo"____________________________________________";
 echo"</br>";
 echo"____________________________________________";
 echo"</br>";
-// echo"____________________________________________";
-?>
+for($i = 0 ; $i < count($rows) ; $i++){?>
         <div>
-            <div><?php if($table -> num_rows == 1){echo $rows['nameDesigner'];}?></div>
-            <div><?php if($table -> num_rows == 1){echo $rows['description'];}?></div>
-            <div><?php if($table -> num_rows == 1){echo $rows['phonNumber'];}?></div>
+            <div><?php if(count($rows) == 1){echo $rows[$i]['nameDesigner'];}?></div>
+            <div><?php if(count($rows) == 1){echo $rows[$i]['description'];}?></div>
+            <div><?php if(count($rows) == 1){echo $rows[$i]['phonNumber'];}?></div>
         </div>
     </body>
 </html>
+<?php
+}

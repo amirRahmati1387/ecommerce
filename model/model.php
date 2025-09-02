@@ -8,7 +8,7 @@ class model extends mainDB{
     protected $join;
     protected $countQuery;
     protected $groupBy;
-    // protected $ifnull;
+    protected $ifnull;
     protected $orderBy;
     protected $x = '';
 
@@ -104,25 +104,26 @@ class model extends mainDB{
         $this -> where(["id" ,$date[0]['id'] , "="]) -> get();
     }
 
-    // protected function subQuery(array $datas){
-    //     $className = static :: class;
-    //     $obj = factory :: factory($className);
-    //     $obj -> type = "subQuery";
-    //     foreach($datas as $alias => $filds){
-    //         foreach($className :: $relatedTo as $tablee => $related){
-    //             $obj -> base .= ',( '.$filds[0] :: select([$filds[1]]) -> from() -> where($className.'.'.$tablee , $tablee.'.'.$related[1]) -> getSql()." ) ".$alias;
-    //         }
-    //     }
-    //     return $obj;
-    // }
+    protected function subQuery(array $datas){
+        $className = static :: class;
+        $obj = factory :: factory($className);
+        $obj -> type = "subQuery";
+        foreach($datas as $alias => $filds){
+            foreach($className :: $relatedTo as $tablee => $related){
+                $obj -> base .= ',( '.$filds[0] :: select([$filds[1]]) -> from() -> where($className.'.'.$tablee , $tablee.'.'.$related[1]) -> getSql()." ) ".$alias;
+            }
+        }
+        return $obj;
+    }
 
-    protected function countQuery(array $datas , $x = null){
-        if($x != null){
-            $this -> x = $x;
+    protected function countQuery(array $datas){
+        if(isset($datas[1])){
+            // $this -> x = $datas;
+            $datas = $datas[0];
         }
         foreach($datas as $alias => $tableName){
             foreach($this -> relatedTo as $key => $value){
-                $this -> countQuery = '('. (new $key) -> count() -> from() -> where([$this -> tableName .'.'.$value[0] , $tableName[0].'.'.$value[1] , "="]) -> getSql() . " ) " . $alias;
+                $this -> countQuery = '('. (new $key) -> count() -> from() -> where([$key .'.'.$value[1] , $value[1].'.'.$value[0] , "="]) -> getSql() . " ) " . $alias;
             }
         }
         $this -> type = "countQuery";
@@ -135,16 +136,16 @@ class model extends mainDB{
         return $this;
     }
 
-    // protected function belongsTo($className_category ,array $filds){
-    //     $className_product = static :: class;
-    //     $obj_product = factory :: factory($className_product);
-    //     $obj_product -> type = "belongsTo";
-    //     $className_product :: select($filds);
-    //     foreach($className_product :: $relatedTo as $value => $key){
-    //         $obj_product -> base .= $obj_product -> join('LEFT',$className_category) -> where($className_product.'.'.$key[0] , $key[0].'.'.$key[1]) -> getSql();
-    //     }
-    //     return $obj_product;
-    // }
+    protected function belongsTo($className_category ,array $filds){
+        $className_product = static :: class;
+        $obj_product = factory :: factory($className_product);
+        $obj_product -> type = "belongsTo";
+        $className_product :: select($filds);
+        foreach($className_product :: $relatedTo as $value => $key){
+            $obj_product -> base .= $obj_product -> join('LEFT',$className_category) -> where($className_product.'.'.$key[0] , $key[0].'.'.$key[1]) -> getSql();
+        }
+        return $obj_product;
+    }
 
     protected function groupBy(array $datas){
         $this -> groupBy = " GROUP BY ". implode('AND' , $datas);
@@ -159,26 +160,23 @@ class model extends mainDB{
             if($datas[2] == "INNER"){
                 $this -> groupBy([$value[1].'.'.$value[0]]);
             }
-            // var_dump($this -> base);
             $this -> base .= $this -> join($datas[2] , $datas[0]) -> where([$key.'.'.$value[1] , $value[1].'.'.$value[0] , "="]) -> getSql();
             if($datas[2] == "LEFT"){
-                $this -> base = $this -> countQuery([' ' => ['product' , 'id']]) -> where($this -> countQuery , 0) -> getSql();
+                $this -> base = $this -> countQuery([' ' => ['product' , 'id']]) -> where([$this -> countQuery , 0 , "="]) -> getSql();
             }
         }
         $this -> type = "whidQuery";
         return $this -> get();
     }
 
-    // protected function if($join , $datas , $filds , $description , $alias){
-    //     $className = static :: class;
-    //     $obj = factory :: factory($className);
-    //     $obj -> base .= $obj -> ifNULL($datas , $filds , $description , $alias) -> ifnull;
-    //     foreach($obj :: $relatedTo as $key => $value){
-    //         $obj -> base .= $obj -> join($join , $datas) -> where($key .'.'. $value[1] , $value[1] .'.'. $value[0]) ->  getSql();
-    //     }
-    //     $obj -> type = "if";
-    //     return $obj;
-    // }
+    protected function if($datas){//$join , $datas , $filds , $description , $alias
+        $this -> base .= $this -> ifNULL($datas[1] , $datas[2] , $datas[3] , $datas[4]) -> ifnull;
+        foreach($this -> relatedTo as $key => $value){
+            $this -> base .= $this -> join($datas[0] , $datas[1]) -> where([$key .'.'. $value[1] , $value[1] .'.'. $value[0] , "="]) ->  getSql();
+        }
+        $this -> type = "if";
+        return $this -> get();
+    }
 
     protected function case($alias){
         $this -> type = "case";
@@ -186,20 +184,16 @@ class model extends mainDB{
         return $this;
     }
 
-    // protected function ifNULL($dates , $fild , $description , $alias){
-    //     $className = static :: class;
-    //     $obj = factory :: factory($className);
-    //     $obj -> base .= " ,IFNULL". "( " . $dates .'.'. $fild .' , '. $description ." )" . $alias;
-    //     return $obj;
-    // }
+    protected function ifNULL($dates , $fild , $description , $alias){
+        $this -> base .= " ,IFNULL". "( " . $dates .'.'. $fild .' , '. $description ." )" . $alias;
+        return $this;
+    }
 
-    // protected function orderBy($alias , $sort){
-    //     $className = static :: class;
-    //     $obj = factory :: factory($className);
-    //     $obj -> type = "orderBy";
-    //     $obj -> orderBy = " ORDER BY " . $alias . $sort;
-    //     return $obj;
-    // }
+    protected function orderBy($orderBy){
+        $this -> type = "orderBy";
+        $this -> orderBy = " ORDER BY " . $orderBy[0] . $orderBy[1];
+        return $this -> get();
+    }
 
     protected function sort($sort){
         $array = $this -> get();
@@ -241,37 +235,34 @@ class model extends mainDB{
 
     protected function getSql(){
         $crud = $this -> base;
-
         if(isset($this -> join)){
             $this -> from();
             $crud = $this -> join . " ON " . implode('AND' , $this -> where);
-            $this -> where = [];
-            $this -> join = '';
+            $this -> where = null;
+            $this -> join = null;
         }
-
-        // if($this -> type == "orderBy"){
-        //     $obj -> base .= ' ,'. $obj -> countQuery;
-        //     $obj -> from();
-        //     $obj -> base .= $obj -> orderBy;
-        //     $crud = $obj -> base;
-        // }
-        // if(isset($obj -> groupBy)){
-        //     $crud .= $obj -> groupBy;
-        //     $obj -> groupBy = '';
-        // }
-
-        if($this -> countQuery && $this -> x){
-            $this -> base .= ','.$this -> countQuery;
+        if($this -> type == "orderBy"){
+            $this -> base .= ' ,'. $this -> countQuery;
             $this -> from();
+            $this -> base .= $this -> orderBy;
             $crud = $this -> base;
-            $this -> countQuery = '';
         }
+        if(isset($this -> groupBy)){
+            $crud .= $this -> groupBy;
+            $this -> groupBy = null;
+        }
+
+        // if($this -> countQuery && $this -> x){
+        //     $this -> base .= ','.$this -> countQuery;
+        //     $this -> from();
+        //     $crud = $this -> base;
+        //     $this -> countQuery = '';
+        // }
 
         if(isset($this -> where)){
             $crud .= " WHERE " . implode('AND', $this -> where);
-            $this -> where = [];
+            $this -> where = null;
         }
-
         if(isset($this -> limit)){
             $crud .= $this -> limit;
             $this -> limit = '';
@@ -285,17 +276,16 @@ class model extends mainDB{
         //     return $className :: $connection -> query($obj -> base);
         // }
 
-        // if(in_array($this -> type , ['pagenate'])){// , 'join' , 'sort' , 'belongsTo' , 'whidQuery' , 'countQuery' , "if" , "orderBy"
+        // if(in_array($this -> type , ['pagenate'])){// , 'join' , 'sort' , 'belongsTo' , 'whidQuery' , 'countQuery'
         //     $base = $obj -> getSql();
         //     return $obj :: $connection -> query($base);
         // }
 
-        if(in_array($this -> type , ['countQuery' , 'whidQuery'])){
-            $base = $this -> getSql();
-            $base = $this -> fetchassoc($base);
-            return $this -> connection -> query($base);
+        if(in_array($this -> type , ['countQuery' , 'whidQuery' , 'orderBy' , 'if'])){
+            $crud = $this -> getSql();
+            $base = $this -> connection -> query($crud);
+            return $this -> fetchassoc($base);
         }
-
         if(in_array($this -> type , ['select' , 'limit' , 'pagenate' , 'delete' , 'create' , 'update' , 'case'])){
             if($this -> type == "create" || $this -> type == "update"){
                 $base = $this -> getSql();

@@ -1,15 +1,15 @@
 <?php
 
-$table = Footer :: select() -> get();
-while($result = $table -> fetch_assoc()){?>
+$table = Footer :: all();
+for($i = 0 ; $i < count($table) ; $i++){?>
     <div>
-        <div><?=$result['id'];?></div>
-        <div><?=$result['nameDesigner'];?></div>
-        <div><?=$result['description'];?></div>
-        <div><?=$result['phonNumber'];?></div>
+        <div><?=$table[$i]['id'];?></div>
+        <div><?=$table[$i]['nameDesigner'];?></div>
+        <div><?=$table[$i]['description'];?></div>
+        <div><?=$table[$i]['phonNumber'];?></div>
     </div>
-    <a href = "http://localhost/ecommerce/deleteFooter/<?=$result['id'];?>">Delete</a>
-    <a href = "http://localhost/ecommerce/editeFooter/<?=$result['id'];?>">Update</a>
-    <a href = "http://localhost/ecommerce/singleFooter/<?=$result['id'];?>">Single</a>
+    <a href = "http://localhost/ecommerce/deleteFooter/<?=$table[$i]['id'];?>">Delete</a>
+    <a href = "http://localhost/ecommerce/editeFooter/<?=$table[$i]['id'];?>">Update</a>
+    <a href = "http://localhost/ecommerce/singleFooter/<?=$table[$i]['id'];?>">Single</a>
 <?php    
 }

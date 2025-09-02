@@ -1,3 +1,3 @@
 <?php
 
-Footer :: delete() -> where("id", $GLOBALS["roterKey"][3]) -> get();
+Footer :: delete($GLOBALS["roterKey"][3]);

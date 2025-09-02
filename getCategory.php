@@ -1,3 +1,3 @@
 <?php
 
-Category :: create($_POST) -> get();
+Category :: create($_POST);

@@ -1,8 +1,11 @@
 <?php
 
-$result = Category :: find() -> where("id", $GLOBALS["roterKey"][3]) -> get() -> fetch_assoc();?>
-<div>
-    <div><?=$result['id'];?></div>
-    <div><?=$result['title'];?></div>
-    <div><?=$result['description'];?></div>
-</div>
+$result = Category :: find($GLOBALS["roterKey"][3]);
+for($i = 0 ; $i < count($result) ; $i++){?>
+    <div>
+        <div><?=$result[$i]['id'];?></div>
+        <div><?=$result[$i]['title'];?></div>
+        <div><?=$result[$i]['description'];?></div>
+    </div>
+<?php
+}

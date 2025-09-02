@@ -1,5 +1,5 @@
 <?php
 
-class User extends model{
-    public static $tableName = "user";
+class User extends facade{
+    public $tableName = "user";
 }

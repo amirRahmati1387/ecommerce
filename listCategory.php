@@ -51,18 +51,17 @@ echo"</br>";
 
 // $table = Category :: select() -> countQuery(['product_count'=>['product']] , 'LIst') -> get();
 
-die();
-$table = Category :: select(["Category.id" , "Category.title" , "Category.description"]) -> if("LEFT" , "Product" , "name" , "'بدون محصول'" , " product_count") -> get();
+$table = Category :: select("Category.id" , "Category.title" , "Category.description") -> if("LEFT" , "Product" , "name" , "'بدون محصول'" , " product_count");
 
-while($result = $table -> fetch_assoc()){?>
+for($i = 0 ; $i < count($table) ; $i++){?>
     <div>
-        <div><?=$result['title'];?></div>
-        <div><?=$result['description'];?></div>
-        <div><?=$result['product_count'];?></div>
+        <div><?=$table[$i]['title'];?></div>
+        <div><?=$table[$i]['description'];?></div>
+        <div><?=$table[$i]['product_count'];?></div>
     </div>
-    <a href = "http://localhost/ecommerce/deleteCategory/<?=$result['id'];?>">Delete</a>
-    <a href = "http://localhost/ecommerce/editeCategory/<?=$result['id'];?>">Update</a>
-    <a href = "http://localhost/ecommerce/singleCategory/<?=$result['id'];?>">Single</a>
+    <a href = "http://localhost/ecommerce/deleteCategory/<?=$table[$i]['id'];?>">Delete</a>
+    <a href = "http://localhost/ecommerce/editeCategory/<?=$table[$i]['id'];?>">Update</a>
+    <a href = "http://localhost/ecommerce/singleCategory/<?=$table[$i]['id'];?>">Single</a>
 <?php
 }
 

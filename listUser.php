@@ -25,15 +25,15 @@ echo"______________________________________________";
 echo"</br>";
 echo"</br>";
 
-while($result = $table -> fetch_assoc()){?>
+for($i = 0 ; $i < count($table) ; $i++){?>
     <div>
-        <div><?=$result['name'];?></div>
-        <div><?=$result['family'];?></div>
-        <div><?=$result['phonNumber'];?></div>
+        <div><?=$table[$i]['name'];?></div>
+        <div><?=$table[$i]['family'];?></div>
+        <div><?=$table[$i]['phonNumber'];?></div>
     </div>
-    <a href = "http://localhost/ecommerce/deleteUser/<?=$result['id'];?>">Delete</a>
-    <a href = "http://localhost/ecommerce/editeUser/<?=$result['id'];?>">Update</a>
-    <a href = "http://localhost/ecommerce/singleUser/<?=$result['id'];?>">Single</a>
+    <a href = "http://localhost/ecommerce/deleteUser/<?=$table[$i]['id'];?>">Delete</a>
+    <a href = "http://localhost/ecommerce/editeUser/<?=$table[$i]['id'];?>">Update</a>
+    <a href = "http://localhost/ecommerce/singleUser/<?=$table[$i]['id'];?>">Single</a>
 <?php
 }
 
@@ -42,7 +42,8 @@ echo"______________________________________________";
 echo"</br>";
 echo"</br>";
 
-$count = ceil($table -> num_rows / 5);
+
+$count = ceil(count($table) / 5);
 for($i = 1 ; $i <= $count; $i++){?>
     <a href = "http://localhost/ecommerce/listUser/page/<?php echo $i?>"><?php echo $i?></a>
 <?php

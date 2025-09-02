@@ -1,3 +1,3 @@
 <?php
 
-User :: create($_POST) -> get();
+User :: create($_POST);

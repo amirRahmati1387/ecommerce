@@ -1,3 +1,3 @@
 <?php
 
-Category :: delete() -> where("id", $GLOBALS["roterKey"][3]) -> get();
+Category :: delete($GLOBALS["roterKey"][3]);

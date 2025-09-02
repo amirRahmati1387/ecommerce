@@ -1,3 +1,3 @@
 <?php
 
-User :: delete() -> where("id", $GLOBALS["roterKey"][3]) -> get();
+User :: delete($GLOBALS["roterKey"][3]);

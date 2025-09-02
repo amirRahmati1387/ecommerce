@@ -1,5 +1,5 @@
 <?php
 
-class Footer extends model{
-    public static $tableName = "footer";
+class Footer extends facade{
+    public $tableName = "footer";
 }
