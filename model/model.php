@@ -22,7 +22,6 @@ class model extends mainDB{
     }
 
     protected function find($id){
-        $className = static :: class;
         $id = implode("",$id);
         return $this -> select() -> where(["id" , $id , '=']) -> get();
     }
@@ -30,10 +29,11 @@ class model extends mainDB{
     protected function limit($sort){
         $sort = implode("",$sort);
         if($sort[0] < $sort[1]){
-            $end = $sort[0];
+            $end = $sort[0];//❌
             $limit = $sort[1] - $sort[0];
             $this -> limit = " LIMIT " . $end . " , " . $limit;
-        }else if($sort[0] > $sort[1]){
+        }
+        if($sort[0] > $sort[1]){
             $limit = $sort[0] - $sort[1];
             $this -> limit = " LIMIT " . $sort[1] . " , " . $limit;
         }
@@ -43,7 +43,7 @@ class model extends mainDB{
     protected function pagenate(){
         $key = $_SERVER['REQUEST_URI'];
         $uriArray = explode("/" , $key);
-        $id = $uriArray[4];
+        // $id = $uriArray[4];
         $this -> select();
         $this -> type = "pagenate";
         if($uriArray[3] === "page"){
@@ -65,8 +65,7 @@ class model extends mainDB{
     protected function delete($id){
         $this -> type = "delete";
         $this -> base = "DELETE ";
-        $id = implode("",$id);
-        $this -> where(["id" , $id , "="]) -> get();
+        $this -> where(["id" , $id[0] , "="]) -> get();
     }
 
     protected function create($date){
@@ -104,17 +103,17 @@ class model extends mainDB{
         $this -> where(["id" ,$date[0]['id'] , "="]) -> get();
     }
 
-    protected function subQuery(array $datas){
-        $className = static :: class;
-        $obj = factory :: factory($className);
-        $obj -> type = "subQuery";
-        foreach($datas as $alias => $filds){
-            foreach($className :: $relatedTo as $tablee => $related){
-                $obj -> base .= ',( '.$filds[0] :: select([$filds[1]]) -> from() -> where($className.'.'.$tablee , $tablee.'.'.$related[1]) -> getSql()." ) ".$alias;
-            }
-        }
-        return $obj;
-    }
+    // protected function subQuery(array $datas){
+    //     $className = static :: class;
+    //     $obj = factory :: factory($className);
+    //     $obj -> type = "subQuery";
+    //     foreach($datas as $alias => $filds){
+    //         foreach($className :: $relatedTo as $tablee => $related){
+    //             $obj -> base .= ',( '.$filds[0] :: select([$filds[1]]) -> from() -> where($className.'.'.$tablee , $tablee.'.'.$related[1]) -> getSql()." ) ".$alias;
+    //         }
+    //     }
+    //     return $obj;
+    // }
 
     protected function countQuery(array $datas){
         if(isset($datas[1])){
@@ -136,16 +135,16 @@ class model extends mainDB{
         return $this;
     }
 
-    protected function belongsTo($className_category ,array $filds){
-        $className_product = static :: class;
-        $obj_product = factory :: factory($className_product);
-        $obj_product -> type = "belongsTo";
-        $className_product :: select($filds);
-        foreach($className_product :: $relatedTo as $value => $key){
-            $obj_product -> base .= $obj_product -> join('LEFT',$className_category) -> where($className_product.'.'.$key[0] , $key[0].'.'.$key[1]) -> getSql();
-        }
-        return $obj_product;
-    }
+    // protected function belongsTo($className_category ,array $filds){
+    //     $className_product = static :: class;
+    //     $obj_product = factory :: factory($className_product);
+    //     $obj_product -> type = "belongsTo";
+    //     $className_product :: select($filds);
+    //     foreach($className_product :: $relatedTo as $value => $key){
+    //         $obj_product -> base .= $obj_product -> join('LEFT',$className_category) -> where($className_product.'.'.$key[0] , $key[0].'.'.$key[1]) -> getSql();
+    //     }
+    //     return $obj_product;
+    // }
 
     protected function groupBy(array $datas){
         $this -> groupBy = " GROUP BY ". implode('AND' , $datas);
@@ -153,9 +152,8 @@ class model extends mainDB{
     }
 
     protected function whidQuery($datas){
-        $base = $this -> base;
         $query = $this -> countQuery($datas[1]) -> countQuery;
-        $count = $this -> base .= ','. $query;
+        $this -> base .= ','. $query;
         foreach($this -> relatedTo as $key => $value){
             if($datas[2] == "INNER"){
                 $this -> groupBy([$value[1].'.'.$value[0]]);
